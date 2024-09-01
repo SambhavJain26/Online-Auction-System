@@ -1,2 +1,2 @@
 # Online-Auction-System
-This is the project for online auction system
+This is a project for online auction system
