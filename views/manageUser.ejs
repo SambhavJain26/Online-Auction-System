@@ -1,0 +1,18 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <a href="/host/dashboard"><button>Go Back</button></a>
+  <% users.forEach((user)=>{ %>
+    <div class="w-72 p-4 bg-slate-400 mb-3 rounded-lg">
+      <p><%= user.username %></p>
+      <p><%= user.email %></p>
+      <a class="text-red-500" href="/host/delete/<%= user._id %>">Delete User</a>
+    </div>
+  <% }) %>
+</body>
+</html>

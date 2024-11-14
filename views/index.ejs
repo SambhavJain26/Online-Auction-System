@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <% if (error.length>0){ %>
+      <div class="absolute top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500">
+        <span class="inline-block mt-1 mb-1 text-white">
+          <%= error %>
+        </span>
+      </div>
+    <% } %> -->
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form action="/loginHost" method="post">
+                <h1>Login as Host</h1>
+                <input type="email" name="email" placeholder="Email">
+                <input type="password" name="password" placeholder="Password">
+                <button>Sign In</button>
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form action="/loginUser" method="post">
+                <h1>Login as User</h1>
+                <input type="email" name="email" placeholder="email">
+                <input type="password" name="password" placeholder="Password">
+                <button>Sign In</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                  <h1>Hello, Franchise??</h1>
+                  <p>If you are the franchise of this auction then please click below</p>
+                  <button class="hidden" id="login">I am User</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hello, Host??</h1>
+                    <p>If you are the host of this auction then please click below</p>
+                    <button class="hidden" id="register">I am Host</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+
+</html>
