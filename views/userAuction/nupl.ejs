@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="flex justify-between items-center">  
+    <div><a href="/host"><button class=" border-2 border-black rounded-lg m-6">Go Back</button></a></div>
+    <div class="text-4xl font-bold absolute left-1/2 transform -translate-x-1/2">NUPL Auction</div>
+  </div>
+
+  <div id="playerContainer">
+    <h2>Selected Player</h2>
+    <div id="playerDetails">No player data received yet.</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+      const socket = io('/users/nupl');
+
+      socket.on('receiveSelectedPlayer', (player) => {
+            const playerDetails = document.getElementById('playerDetails');
+            playerDetails.innerHTML = `
+                <p>Name: ${player.name}</p>
+                <p>Description: ${player.description}</p>
+            `;
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="flex justify-between items-center">  
+    <div><a href="/host"><button class=" border-2 border-black rounded-lg m-6">Go Back</button></a></div>
+    <div class="text-4xl font-bold absolute left-1/2 transform -translate-x-1/2">NUPL Auction</div>
+  </div>
+
+  <div class="flex justify-stretch">
+    <div class="h-full max-w-fit p-2 border-2 m-3 border-black rounded-md">
+      <div class="text-center text-2xl font-semibold">Auction Players</div>
+      <div class="grid grid-cols-2 gap-3">
+        <% nupl.forEach((player)=>{ %>
+          <div class="w-72 p-4 bg-slate-400 mb-3 rounded-lg">
+            <p><%= player.name %></p>
+            <p><%= player.description %></p>
+            <button class="sendPlayerBtn" data-name="<%= player.name %>" data-description="<%= player.description %>">
+              Send to User
+            </button>
+            <a class="text-red-500" href="/host/deleteplayer/<%= player._id %>">Delete player</a>
+          </div>
+        <% }) %>
+      </div>   
+    </div>
+    
+    <div class="border-black rounded-md border-2 ">
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('/host/nupl');
+
+        document.querySelectorAll('.sendPlayerBtn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const playerData = {
+                    name: btn.dataset.name,
+                    description: btn.dataset.description
+                };
+                console.log(playerData)
+                socket.emit('shareSelectedPlayer', playerData); // Send player data to the user
+                alert(`Player "${playerData.name}" sent to users.`);
+            });
+        });
+    </script>
+  
+</html>

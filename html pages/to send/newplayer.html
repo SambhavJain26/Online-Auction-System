@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <a href="/host/dashboard"><button>Go back</button></a>
+  <form action="/host/addnew" method="post">
+    <input type="text" name="name" placeholder="Name of the player">
+    <input type="email" name="email" placeholder="Player email">
+    <input type="text" name="description" placeholder="Player description">
+    <label for="auction">Choose the auction:</label>
+    <select name="auction" id="auction">
+      <option value="impetus">impetus</option>
+      <option value="nupl cricket">nupl cricket</option>
+      <option value="futsal">futsal</option>
+      <option value="nukl kabbadi">nukl kabbadi</option>
+    </select>
+    <input type="submit" value="Add user">
+  </form>
+</body>
+</html>

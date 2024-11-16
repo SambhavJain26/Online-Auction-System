@@ -6,14 +6,14 @@
 </head>
 <body>
   <a href="/host/dashboard"><button>Go back</button></a>
-  <form action="/host/add" method="post">
-    <input type="text" name="username" placeholder="Username">
-    <input type="email" name="email" placeholder="email">
-    <input type="password" name="password" placeholder="password">
+  <form action="/host/addnew" method="post">
+    <input type="text" name="name" placeholder="Name of the player">
+    <input type="email" name="email" placeholder="Player email">
+    <input type="text" name="description" placeholder="Player description">
     <label for="auction">Choose the auction:</label>
     <select name="auction" id="auction">
       <option value="impetus">impetus</option>
-      <option value="nupl">nupl cricket</option>
+      <option value="nupl cricket">nupl cricket</option>
       <option value="futsal">futsal</option>
       <option value="nukl kabbadi">nukl kabbadi</option>
     </select>
