@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User - NUKL Auction</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-[#FFFCF2] relative">
+
+  <div class="text-4xl font-bold text-center text-[#252422] mt-8">NUKL Auction</div>
+
+  <div class="flex justify-between items-center mt-6 px-6">
+    <div class="text-3xl font-semibold text-red-600">
+      Time Remaining: <span id="timer">10</span> seconds
+    </div>
+
+    <div class="text-2xl text-gray-800 text-center border-2 border-black p-3 rounded-lg items-center justify-center" id="current-bid">
+      Current Bid: ₹0
+    </div>
+
+    <div class="flex border-4 border-[#EB5E28] rounded-lg px-4 py-2 text-2xl font-semibold text-gray-800">
+      <p class="mr-4">Your Budget:</p>
+      ₹<span id="user-budget"><%= userBalance %></span>
+    </div>
+  </div>
+
+  <div class="flex justify-center gap-8 mt-10 mx-4">
+
+    <div id="player-container" class="bg-gray-300 shadow-lg rounded-lg flex flex-col items-center w-full max-w-sm p-6">
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg w-1/3 p-6 space-y-4">
+      <p class="text-lg font-bold text-gray-800">Bid History</p>
+      <div id="bid-history" class="max-h-40 overflow-y-auto space-y-2 text-gray-600">
+      </div>
+    </div>
+    
+  </div>
+
+  <div class="flex justify-center space-x-4 mt-8">
+    <button id="bid-button" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
+      Place Bid
+    </button>
+    <button id="pass-button" class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-300">
+      Pass
+    </button>
+  </div>
+
+  <div id="winner-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 text-white items-center justify-center text-center z-[9999]">
+    <div>
+      <h1 class="text-4xl font-bold" id="winner-message"></h1>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('/users/nukl');
+
+    let currentBid = 0;
+    let countdownTimer = 10; 
+    let timerInterval;
+    let biddingEnabled = false;
+    let userBudget = parseInt(document.getElementById('user-budget').innerText);
+
+    document.getElementById('pass-button').addEventListener('click', () => {
+      socket.emit("pass", "<%= userId %>");
+    });
+
+    const storedBudget = localStorage.getItem("userBudget");
+    if (storedBudget) {
+      userBudget = parseInt(storedBudget, 10); 
+    }
+    document.getElementById("user-budget").innerText = `${userBudget}`;
+
+    function calculateNextBid() {
+      if (currentBid === 0) {
+        return 3000; 
+      } else if (currentBid < 10000) {
+        return currentBid + 500; 
+      } else {
+        return currentBid + 1000; 
+      }
+    }
+
+    function updateCurrentBid(bid) {
+      document.getElementById('current-bid').innerText = `Current Bid: ₹${bid}`;
+      currentBid = bid;
+    }
+
+    function placeBid(userId) {
+      if (!biddingEnabled) {
+        alert("Bidding is not allowed at this time.");
+        return;
+      }
+      const newBid = calculateNextBid();
+      if (userBudget < newBid) {
+        alert("You don't have enough budget to place this bid.");
+        return;
+      }
+
+      socket.emit('placeBid', { userId, newBid });
+    }
+
+    function updateTimerDisplay(timer) {
+      document.getElementById('timer').innerText = timer;
+    }
+
+    function renderBidHistory(history) {
+      const historyContainer = document.getElementById('bid-history');
+      historyContainer.innerHTML = '';
+
+      history.forEach(({ username, amount }) => {
+        const entry = document.createElement('p');
+        entry.classList.add('text-gray-600');
+        entry.innerText = `${username} ${amount === "Passed" ? "has passed" : `placed a bid of ₹${amount}`}`;
+        historyContainer.appendChild(entry);
+      });
+    }
+
+    function renderPlayer(playerData) {
+      const playerContainer = document.getElementById('player-container');
+      playerContainer.innerHTML = '';
+
+      const playerCard = `
+        <img src="../imgs/uploads/${playerData.image}" alt="${playerData.name}" class="w-48 h-60 rounded-md object-cover mb-4">
+        <div class="flex flex-col space-y-2">
+          <p class="text-2xl font-bold text-gray-800">${playerData.name}</p>
+          <p class="text-gray-600">${playerData.description}</p>
+        </div>
+      `;
+
+      playerContainer.innerHTML = playerCard;
+    }
+
+    fetch('/api/current-player')
+      .then(response => response.json())
+      .then(playerData => {
+        if (playerData.name) {
+          renderPlayer(playerData); 
+        }
+    });
+
+    socket.on('auctionEnded', ({ message, redirectRoute }) => {
+      window.location.href = `${redirectRoute}?auctionEnded=true`;
+    });
+
+    socket.on('receiveSelectedPlayer', (playerData) => {
+      updateCurrentBid(0); 
+      renderBidHistory([]);
+      renderPlayer(playerData);
+    });
+
+    socket.on('bidHistoryUpdate', (history) => {
+      renderBidHistory(history);
+    });
+
+    socket.on('currentBidUpdate', (bid) => {
+      updateCurrentBid(bid); 
+    });
+
+    socket.on('timerUpdate', (timer) => {
+      updateTimerDisplay(timer);
+    });
+
+    socket.on('biddingStatusUpdate', (status) => {
+      biddingEnabled = status;
+      document.getElementById('bid-button').disabled = !biddingEnabled;
+    });
+
+    socket.on('passButtonStatus', (status) => {
+      const passButton = document.getElementById('pass-button');
+      passButton.disabled = !status; 
+    });
+
+    socket.on('announceWinner', ({ username, player }) => {
+      const overlay = document.getElementById('winner-overlay');
+      const message = document.getElementById('winner-message');
+      message.innerText = `${username} bought ${player}`;
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+
+      userBudget -= currentBid;
+      document.getElementById("user-budget").innerText = `${userBudget}`;
+      localStorage.setItem("userBudget", userBudget);
+    });
+
+    socket.on('unsoldPlayer', ({ player }) => {
+      const overlay = document.getElementById('winner-overlay');
+      const message = document.getElementById('winner-message');
+      message.innerText = `Player ${player} is unsold`;
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+    });
+
+    socket.on('resetWinner', () => {
+      const overlay = document.getElementById('winner-overlay');
+      overlay.classList.add('hidden');
+      overlay.classList.remove('flex');
+    });
+
+    document.getElementById('bid-button').addEventListener('click', () => {
+      placeBid("<%= userId %>");
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUPL Auction Picks</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-[#FFFCF2]">
+  <div class="w-full bg-[#403D39] p-6 flex justify-between items-center text-[#FFFCF2]">
+    <div class="ml-10 bg-[#EB5E28] py-2 px-4 rounded-lg text-white font-semibold text-lg">
+      <a href="/users/yourPicks">Go back</a>
+    </div>
+    <div class="flex items-center">
+      <img src="/imgs/nu logo.png" alt="Nu logo" class="w-20 h-10 object-cover mr-2">
+      <div class="font-bold pr-10 text-2xl">NU AUCTION SYSTEM</div>
+    </div>
+  </div>
+  <div class="text-[#252422] grid grid-cols-1 justify-items-center my-10">
+    <div class="text-4xl font-bold mb-3">Your NUPL Picks</div>
+    <div class="text-lg font-semibold">Players you have bought from the NUPL auction</div>
+  </div>
+
+  <!-- Grid Layout for Players -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mx-12 mt-6">
+    <% players.forEach(player => { %>
+      <div class="bg-white border-4 border-[#EB5E28]/50 rounded-lg p-4 shadow-lg">
+        <img src="/imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>" class="object-cover rounded-lg w-full h-48 shadow-md" />
+        <div class="mt-4">
+          <p class="text-xl font-semibold text-[#252422]"><%= player.name %></p>
+          <p class="text-sm text-gray-600"><%= player.description %></p>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>

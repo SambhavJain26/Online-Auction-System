@@ -1,14 +1,30 @@
 const userModel = require("../models/users-model")
 const hostModel = require("../models/host-model")
 const playerModel = require("../models/players-model")
+const auctionModel = require('../models/auction-model');
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { generateToken } = require("../utils/generateToken")
 
 module.exports.addUser = async (req, res)=>{
   try{
-    let{ username, email, password, auction} = req.body;
+    let{ username, email, password} = req.body;
+    let auctions = [];
 
+    // Extract auctions and budgets
+    if (req.body.auction) {
+      const selectedAuctions = Array.isArray(req.body.auction) ? req.body.auction : [req.body.auction];
+      for (let auction of selectedAuctions) {
+        const budgetKey = `budget_${auction}`;
+        if (req.body[budgetKey]) {
+          auctions.push({
+            auction: auction,
+            budget: parseFloat(req.body[budgetKey])
+          });
+        }
+      }
+    }
+    let profilepic = req.file.filename;
     let user = await userModel.findOne({email:email})
     if (user) return res.status(401).send("The user's account is already created")
 
@@ -16,12 +32,24 @@ module.exports.addUser = async (req, res)=>{
       bcrypt.hash(password, salt, async (err, hash)=> {
         if(err) return res.send(err.message)
         else {
-          let user = await userModel.create({
+          let newUser = await userModel.create({
             username,
             email,
             password: hash,
-            auction
+            profilepic,
+            auctions,
           })
+
+          const userId = newUser._id;
+
+          for (let auction of auctions) {
+            await auctionModel.findOneAndUpdate(
+              { auctionName: auction.auction }, 
+              { $addToSet: { users: userId } }, 
+              { upsert: true, new: true } 
+            );
+          }
+
           res.redirect("/host/adduser")
         }
       })
@@ -35,9 +63,9 @@ module.exports.addUser = async (req, res)=>{
 module.exports.newHost = async (req, res)=>{
   try{
     let{email, password, hostname} = req.body;
-
+    let profilepic = req.file.filename;
     let host = await hostModel.findOne({email:email})
-    if (host) return res.status(401).send("The host's account is already created")
+    if (host) return res.redirect("/host/newhost")
 
     bcrypt.genSalt(10, (err, salt)=>{
       bcrypt.hash(password, salt, async (err, hash)=> {
@@ -46,7 +74,8 @@ module.exports.newHost = async (req, res)=>{
           let host = await hostModel.updateOne({
             email,
             password: hash,
-            hostname
+            hostname,
+            profilepic
           })
           res.redirect("/host/logout")
         }
@@ -61,7 +90,7 @@ module.exports.newHost = async (req, res)=>{
 module.exports.newPlayer = async (req, res)=>{
   try{
     let{name, email, description , auction} = req.body;
-
+    let profilepic = req.file.filename;
     let player = await playerModel.findOne({ email, auction});
     if (player) return res.status(401).send("The player is already added")
   
@@ -69,6 +98,7 @@ module.exports.newPlayer = async (req, res)=>{
             name,
             email,
             description,
+            profilepic,
             auction
     })
     res.redirect("/host/newplayer")

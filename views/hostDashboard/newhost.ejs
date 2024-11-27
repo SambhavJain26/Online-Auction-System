@@ -1,16 +1,44 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Add Host</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <a href="/host/dashboard"><button>Go back</button></a>
-  <form action="/host/new" method="post">
-    <input type="text" name="hostname" placeholder="Hostname">
-    <input type="email" name="email" placeholder="email">
-    <input type="password" name="password" placeholder="password">
-    <input type="submit" value="Add Host">
-  </form>
+<body class="bg-[#f9fafb]">
+
+  <!-- Go Back Button -->
+  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-white">
+    <a href="/host/dashboard">
+      <button class="px-6 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
+    </a>
+  </div>
+
+  <!-- Form Container -->
+  <div class="flex justify-center items-center min-h-screen bg-[#f9fafb]">
+    <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
+      <h2 class="text-2xl font-bold text-center text-[#403D39] mb-6">Add Host</h2>
+      <form action="/host/new" method="post" enctype="multipart/form-data" class="space-y-4">
+        
+        <!-- Hostname -->
+        <input type="text" name="hostname" placeholder="Hostname" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+
+        <!-- Email -->
+        <input type="email" name="email" placeholder="Email" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+
+        <!-- Password -->
+        <input type="password" name="password" placeholder="Password" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+
+        <!-- Profile Image -->
+        <input type="file" name="image" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+
+        <!-- Submit Button -->
+        <input type="submit" value="Add Host" class="w-full py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300">
+
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

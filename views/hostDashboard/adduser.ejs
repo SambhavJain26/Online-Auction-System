@@ -1,23 +1,91 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Host - Add User</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <a href="/host/dashboard"><button>Go back</button></a>
-  <form action="/host/add" method="post">
-    <input type="text" name="username" placeholder="Username">
-    <input type="email" name="email" placeholder="email">
-    <input type="password" name="password" placeholder="password">
-    <label for="auction">Choose the auction:</label>
-    <select name="auction" id="auction">
-      <option value="impetus">impetus</option>
-      <option value="nupl">nupl cricket</option>
-      <option value="futsal">futsal</option>
-      <option value="nukl">nukl kabbadi</option>
-    </select>
-    <input type="submit" value="Add user">
-  </form>
+<body class="bg-[#f9fafb]">
+
+  <!-- Go Back Button -->
+  <div class="flex justify-between items-center p-6 bg-[#403D39] text-white">
+    <a href="/host/dashboard">
+      <button class="px-4 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
+    </a>
+  </div>
+
+  <!-- Form Section -->
+  <div class="max-w-xl mx-auto mt-4 p-6 bg-white rounded-lg shadow-lg">
+    <h2 class="text-3xl font-semibold text-center text-[#403D39] mb-6">Add User</h2>
+
+    <form action="/host/add" method="post" enctype="multipart/form-data">
+
+      <!-- Username and Email Inputs -->
+      <div class="mb-4">
+        <input type="text" name="username" placeholder="Username" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+      </div>
+
+      <div class="mb-4">
+        <input type="email" name="email" placeholder="Email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+      </div>
+
+      <div class="mb-4">
+        <input type="password" name="password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+      </div>
+
+      <!-- File Upload -->
+      <div class="mb-4">
+        <input type="file" name="image" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+      </div>
+
+      <!-- Auction Checkboxes and Budget Inputs -->
+      <div class="mb-4">
+        <label class="block text-xl font-medium text-[#403D39] mb-2">Choose the Auctions:</label>
+
+        <!-- Impetus Auction -->
+        <div class="flex items-center mb-4">
+          <input type="checkbox" name="auction" value="impetus" onchange="toggleBudget('impetus')" class="mr-2">
+          <label for="impetus" class="text-lg">Impetus</label>
+          <input type="number" name="budget_impetus" placeholder="Budget for Impetus" id="budget_impetus" class="ml-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" style="display:none;" min="0">
+        </div>
+
+        <!-- NUPL Auction -->
+        <div class="flex items-center mb-4">
+          <input type="checkbox" name="auction" value="nupl" onchange="toggleBudget('nupl')" class="mr-2">
+          <label for="nupl" class="text-lg">NUPL Cricket</label>
+          <input type="number" name="budget_nupl" placeholder="Budget for NUPL" id="budget_nupl" class="ml-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" style="display:none;" min="0">
+        </div>
+
+        <!-- Futsal Auction -->
+        <div class="flex items-center mb-4">
+          <input type="checkbox" name="auction" value="futsal" onchange="toggleBudget('futsal')" class="mr-2">
+          <label for="futsal" class="text-lg">Futsal</label>
+          <input type="number" name="budget_futsal" placeholder="Budget for Futsal" id="budget_futsal" class="ml-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" style="display:none;" min="0">
+        </div>
+
+        <!-- NUKL Auction -->
+        <div class="flex items-center mb-6">
+          <input type="checkbox" name="auction" value="nukl" onchange="toggleBudget('nukl')" class="mr-2">
+          <label for="nukl" class="text-lg">NUKL Kabbadi</label>
+          <input type="number" name="budget_nukl" placeholder="Budget for NUKL" id="budget_nukl" class="ml-4 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" style="display:none;" min="0">
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-center">
+        <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">Add User</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    function toggleBudget(auction) {
+      const budgetInput = document.getElementById(`budget_${auction}`);
+      budgetInput.style.display = budgetInput.style.display === "none" ? "block" : "none";
+    }
+  </script>
+
 </body>
 </html>

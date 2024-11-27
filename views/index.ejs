@@ -9,13 +9,6 @@
 </head>
 
 <body>
-    <!-- <% if (error.length>0){ %>
-      <div class="absolute top-5 left-1/2 -translate-x-1/2 p-3 rounded-md bg-red-500">
-        <span class="inline-block mt-1 mb-1 text-white">
-          <%= error %>
-        </span>
-      </div>
-    <% } %> -->
     <div class="container" id="container">
         <div class="form-container sign-up">
             <form action="/loginHost" method="post">
@@ -28,7 +21,7 @@
         <div class="form-container sign-in">
             <form action="/loginUser" method="post">
                 <h1>Login as User</h1>
-                <input type="email" name="email" placeholder="email">
+                <input type="email" name="email" placeholder="Email">
                 <input type="password" name="password" placeholder="Password">
                 <button>Sign In</button>
             </form>

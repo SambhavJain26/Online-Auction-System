@@ -3,9 +3,12 @@ const router = express.Router();
 const {addUser,newHost,newPlayer, logoutHost} = require("../controllers/authController");
 const usersModel = require('../models/users-model');
 const playerModel = require("../models/players-model")
+const upload = require("../utils/multerconfig");
+const hostModel = require('../models/host-model');
 
-router.get("/", (req, res)=>{
-  res.render("host")
+router.get("/", async (req, res)=>{
+  const host = await hostModel.findOne()
+  res.render("host", {host})
 })
 
 // Dashboard Functionality here //
@@ -46,7 +49,6 @@ router.get("/deleteplayer/:id", async (req, res)=>{
 
 
 // AUCTION ROUTERS LISTED BELOW //
-
 router.get("/nupl", async(req, res)=>{
   let nupl = await playerModel.find({auction: "nupl cricket"})
   res.render("hostAuction/nupl", {nupl})
@@ -63,12 +65,11 @@ router.get("/nukl", async(req, res)=>{
   let nukl = await playerModel.find({auction: "nukl kabbadi"})
   res.render("hostAuction/nukl", {nukl})
 })
-
 // AUCTION ROUTERS END HERE //
 
-router.post("/addnew", newPlayer)
-router.post("/new", newHost)
-router.post("/add", addUser)
+router.post("/addnew", upload.single("image"), newPlayer)
+router.post("/new", upload.single("image"), newHost)
+router.post("/add", upload.single("image"), addUser)
 router.get("/logoutHost", logoutHost)
 
 module.exports = router;

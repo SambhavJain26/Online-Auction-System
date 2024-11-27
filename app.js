@@ -18,6 +18,9 @@ const usersRouter = require("./routes/usersRouter")
 const auctionRouter = require("./routes/auctionRouter")
 const {loginHost, loginUser} = require("./controllers/authController")
 
+const userModel = require("./models/users-model")
+const playerModel = require("./models/players-model")
+
 require("dotenv").config();
 
 app.use(express.json());
@@ -58,33 +61,204 @@ app.use("/users/impetus", usersRouter)
 app.use("/users/nukl", usersRouter)
 app.use("/users/futsal", usersRouter)
 
-// WEB SOCKET CODE HERE //
-const hostNamespace = io.of('/host/nupl');
-const userNamespace = io.of('/users/nupl');
+const auctions = ['nupl', 'impetus', 'nukl', 'futsal'];
+auctions.forEach((auction) => {
+  createAuctionNamespace(auction);
+});
 
-// Host Namespace Logic
+function createAuctionNamespace(auctionName) {
+  const hostNamespace = io.of(`/host/${auctionName}`);
+  const userNamespace = io.of(`/users/${auctionName}`);
+
+let lastSentPlayer = null;
+let hostPlayers = [];
+let currentBid = 0;
+let bidHistory = [];
+let countdownTimer = 10; 
+let timerInterval;
+let biddingEnabled = false; 
+let passedUsers = new Set();
+let playerAvailable = false;
+
 hostNamespace.on('connection', (socket) => {
-    console.log('Host connected:', socket.id);
+  console.log('Host connected:', socket.id);
 
-    socket.on('shareSelectedPlayer', (player) => {
-        userNamespace.emit('receiveSelectedPlayer', player); // Broadcast to users
-    });
+  socket.on('shareSelectedPlayer', (player) => {
+    currentBid = 0;
+    bidHistory = [];
+    countdownTimer = 10; 
+    lastSentPlayer = player; 
+    hostPlayers = hostPlayers.filter(player => player.name !== lastSentPlayer.name); 
+    biddingEnabled = true;
+    playerAvailable = true;
 
-    socket.on('disconnect', () => {
-        console.log('Host disconnected:', socket.id);
+    [hostNamespace, userNamespace].forEach(ns => {
+      ns.emit("resetWinner");
+      ns.emit("receiveSelectedPlayer", lastSentPlayer);
+      ns.emit("currentBidUpdate", currentBid);
+      ns.emit("bidHistoryUpdate", bidHistory);
+      ns.emit("timerUpdate", countdownTimer);
+      ns.emit("biddingStatusUpdate", biddingEnabled);
+      ns.emit("passButtonStatus", playerAvailable);
     });
+  });
+
+  socket.on('endAuction', () => {
+    const redirectRoute = '/users'; // Set the redirect route to /users
+    userNamespace.emit('auctionEnded', { message: "The auction was ended by the host.", redirectRoute });
+  });
+
+
+  socket.on('disconnect', () => {
+      console.log('Host disconnected:', socket.id);
+  });
 });
 
-// User Namespace Logic
 userNamespace.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+  console.log('User connected:', socket.id);
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
+  if (lastSentPlayer) {
+    playerAvailable = true;
+    socket.emit('receiveSelectedPlayer', lastSentPlayer);
+  } else {
+    playerAvailable = false;
+  }
+
+  socket.emit('currentBidUpdate', currentBid);
+  socket.emit('bidHistoryUpdate', bidHistory);
+  socket.emit('timerUpdate', countdownTimer);
+  socket.emit("biddingStatusUpdate", biddingEnabled);
+  socket.emit("passButtonStatus", playerAvailable);
+
+  socket.on("placeBid", async (bidData) => {
+    if (!biddingEnabled) {
+      socket.emit("bidError", "Bidding is not allowed at this time.");
+      return;
+    }
+
+    const { userId, newBid } = bidData; 
+    currentBid = newBid;
+    const currentUser = await userModel.findById(userId);
+
+    bidHistory.push({ username: currentUser.username, amount: currentBid, userId });
+
+    passedUsers.clear();
+
+    [hostNamespace, userNamespace].forEach(ns => {
+      ns.emit("currentBidUpdate", currentBid);
+      ns.emit("bidHistoryUpdate", bidHistory);
     });
+
+    resetAndStartTimer();
+  });
+
+  socket.on("pass", (userId) => {
+    if (!playerAvailable) return;
+    passedUsers.add(userId);
+
+    userModel.findById(userId).then((currentUser) => {
+      if (currentUser) {
+
+        bidHistory.push({ username: currentUser.username, amount: "Passed" });
+
+        [hostNamespace, userNamespace].forEach((ns) => {
+          ns.emit("bidHistoryUpdate", bidHistory);
+        });
+      }
+
+      if (passedUsers.size >= userNamespace.sockets.size) {
+        clearInterval(timerInterval);
+        biddingEnabled = false;
+        playerAvailable = false;
+
+        [hostNamespace, userNamespace].forEach((ns) => {
+          ns.emit("unsoldPlayer", { player: lastSentPlayer.name });
+          ns.emit("biddingStatusUpdate", biddingEnabled);
+          ns.emit("passButtonStatus", false); 
+        });
+
+        console.log(`Player ${lastSentPlayer.name} is unsold.`);
+      }
+    });
+  });
+
+  socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+  });
 });
 
+function resetAndStartTimer() {
+  clearInterval(timerInterval);
+  countdownTimer = 10;
+  biddingEnabled = true;
 
-// WEB SOCKET CODE ENDS HERE //
+  [hostNamespace, userNamespace].forEach(ns => {
+    ns.emit("biddingStatusUpdate", biddingEnabled);
+    ns.emit('timerUpdate', countdownTimer);
+  });
+
+  timerInterval = setInterval(() => {
+    if (countdownTimer > 0) {
+      countdownTimer--; 
+      [hostNamespace, userNamespace].forEach(ns => {
+        ns.emit('timerUpdate', countdownTimer);
+      });
+    } else {
+      clearInterval(timerInterval); 
+      biddingEnabled = false; 
+      [hostNamespace, userNamespace].forEach(ns => {
+        ns.emit("biddingStatusUpdate", biddingEnabled);
+      });
+      announceWinner();
+    }
+  }, 1000); 
+}
+
+async function announceWinner() {
+  if (bidHistory.length === 0 || !lastSentPlayer) {
+    return;
+  }
+
+  const highestBid = bidHistory[bidHistory.length - 1];
+  if (!highestBid) {
+    console.log("No valid highest bid. Skipping winner announcement.");
+    return;
+  }
+
+  try {
+    const winner = await userModel.findById(highestBid.userId);
+
+    if (winner) {
+      const boughtPlayer = await playerModel.findById(lastSentPlayer.id);
+      if (boughtPlayer) {
+        winner.players.push(boughtPlayer._id);
+        await winner.save();
+      }
+
+      [hostNamespace, userNamespace].forEach(ns => {
+        ns.emit("announceWinner", {
+          username: winner.username,
+          player: lastSentPlayer.name
+        });
+      });
+
+      console.log(`Winner announced: ${winner.username} bought ${lastSentPlayer.name}`);
+    } else {
+      console.log("Winner not found in the database.");
+    }
+  } catch (err) {
+    console.error("Error announcing winner:", err.message);
+  }
+}
+
+app.get('/api/current-player', (req, res) => {
+  res.json(lastSentPlayer || {});
+});
+
+app.get('/api/host-players', (req, res) => {
+  res.json(hostPlayers);
+});
+}
+
 
 server.listen(3000);

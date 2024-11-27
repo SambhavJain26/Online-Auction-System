@@ -1,23 +1,53 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Add New Player</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <a href="/host/dashboard"><button>Go back</button></a>
-  <form action="/host/addnew" method="post">
-    <input type="text" name="name" placeholder="Name of the player">
-    <input type="email" name="email" placeholder="Player email">
-    <input type="text" name="description" placeholder="Player description">
-    <label for="auction">Choose the auction:</label>
-    <select name="auction" id="auction">
-      <option value="impetus">impetus</option>
-      <option value="nupl cricket">nupl cricket</option>
-      <option value="futsal">futsal</option>
-      <option value="nukl kabbadi">nukl kabbadi</option>
-    </select>
-    <input type="submit" value="Add user">
-  </form>
+<body class="bg-[#f9fafb]">
+
+  <!-- Go Back Button -->
+  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-white">
+    <a href="/host/dashboard">
+      <button class="px-4 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
+    </a>
+  </div>
+
+  <!-- Form Container -->
+  <div class="flex justify-center items-center min-h-screen bg-[#f9fafb]">
+    <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
+      <h2 class="text-2xl font-bold text-center text-[#403D39] mb-6">Add New Player</h2>
+      <form action="/host/addnew" method="post" enctype="multipart/form-data" class="space-y-6">
+        
+        <!-- Player Name -->
+        <input type="text" name="name" placeholder="Name of the player" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+
+        <!-- Player Email -->
+        <input type="email" name="email" placeholder="Player email" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+
+        <!-- Player Description -->
+        <input type="text" name="description" placeholder="Player description" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+
+        <!-- Player Image -->
+        <input type="file" name="image" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+
+        <!-- Auction Selection -->
+        <label for="auction" class="block text-lg font-medium text-[#403D39]">Choose the auction:</label>
+        <select name="auction" id="auction" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+          <option value="impetus">Impetus</option>
+          <option value="nupl cricket">NUPL Cricket</option>
+          <option value="futsal">Futsal</option>
+          <option value="nukl kabbadi">NUKL Kabbadi</option>
+        </select>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Add Player" class="w-full py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300">
+
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -1,52 +1,84 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <a href="/host/dashboard"><button class=" border-2 border-black rounded-lg m-6">Go Back</button></a>
-  <div class="flex justify-evenly">
-    <div class="h-full w-full p-2 border-2 mr-3 ml-6 my-3 border-black rounded-md">
-      <h1 class="text-center text-3xl font-bold">IMPETUS</h1>
-      <% impetus.forEach((player)=>{ %>
-        <div class="w-72 p-4 bg-slate-400 mb-3 rounded-lg">
-          <p><%= player.name %></p>
-          <p><%= player.description %></p>
-          <a class="text-red-500" href="/host/deleteplayer/<%= player._id %>">Delete player</a>
-        </div>
-      <% }) %>
-    </div>
-    <div class="h-full w-full p-2 border-2 m-3 border-black rounded-md">
-      <h1 class="text-center text-3xl font-bold">NUPL</h1>
-      <% nupl.forEach((player)=>{ %>
-        <div class="w-72 p-4 bg-slate-400 mb-3 rounded-lg">
-          <p><%= player.name %></p>
-          <p><%= player.description %></p>
-          <a class="text-red-500" href="/host/deleteplayer/<%= player._id %>">Delete player</a>
-        </div>
-      <% }) %>
-    </div>
-    <div class="h-full w-full p-2 border-2 m-3 border-black rounded-md">
-      <h1 class="text-center text-3xl font-bold">FUTSAL</h1>
-      <% futsal.forEach((player)=>{ %>
-        <div class="w-72 p-4 bg-slate-400 mb-3 rounded-lg">
-          <p><%= player.name %></p>
-          <p><%= player.description %></p>
-          <a class="text-red-500" href="/host/deleteplayer/<%= player._id %>">Delete player</a>
-        </div>
-      <% }) %>
-    </div>
-    <div class="h-full w-full p-2 border-2 ml-3 mr-6 my-3 border-black rounded-md">
-      <h1 class="text-center text-3xl font-bold">NUKL</h1>
-      <% nukl.forEach((player)=>{ %>
-        <div class="w-72 p-4 bg-slate-400 mb-3 rounded-lg">
-          <p><%= player.name %></p>
-          <p><%= player.description %></p>
-          <a class="text-red-500" href="/host/deleteplayer/<%= player._id %>">Delete player</a>
-        </div>
-      <% }) %>
-    </div>
+<body class="bg-[#f9fafb]">
+
+  <!-- Go Back Button -->
+  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-white">
+    <a href="/host/dashboard">
+      <button class="px-4 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
+    </a>
   </div>
+
+  <!-- Main Content with Auction Sections -->
+  <div class="flex flex-wrap justify-evenly gap-8 px-6 py-8">
+
+    <!-- IMPETUS Section -->
+    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
+      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">IMPETUS</h1>
+      <% impetus.forEach((player) => { %>
+        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
+          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
+            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+          </div>
+          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
+          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
+          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- NUPL Section -->
+    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
+      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">NUPL</h1>
+      <% nupl.forEach((player) => { %>
+        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
+          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
+            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+          </div>
+          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
+          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
+          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- FUTSAL Section -->
+    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
+      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">FUTSAL</h1>
+      <% futsal.forEach((player) => { %>
+        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
+          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
+            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+          </div>
+          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
+          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
+          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- NUKL Section -->
+    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
+      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">NUKL</h1>
+      <% nukl.forEach((player) => { %>
+        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
+          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
+            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+          </div>
+          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
+          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
+          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
+        </div>
+      <% }) %>
+    </div>
+
+  </div>
+
+</body>
 </html>

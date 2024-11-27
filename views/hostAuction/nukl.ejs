@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host - NUKL Auction</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-[#FFFCF2]">
+  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-[#FFFCF2]">
+    <a href="/host">
+      <button class="bg-orange-500 text-white font-bold rounded-lg p-2 hover:bg-orange-600 transition">Go Back</button>
+    </a>
+    <div class="text-4xl font-bold">NUKL Auction</div>
+  </div>
+
+  <div class="flex justify-between px-6 py-8">
+    <div class="flex-1 max-w-3xl p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg">
+      <div class="text-center text-2xl font-semibold mb-4">Auction Players</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="hostPlayerList">
+        <% nukl.forEach((player) => { %>
+          <div class="w-full p-4 bg-slate-400 rounded-lg flex flex-col justify-between h-full">
+            <div class="w-full h-40 overflow-hidden rounded-lg mb-4">
+              <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+            </div>
+            <p class="font-semibold text-xl text-gray-800"><%= player.name %></p>
+            <p class="text-gray-600 text-sm"><%= player.description %></p>
+            <div class="flex justify-center mt-4">
+              <button class="sendPlayerBtn bg-[#EB5E28] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#FF7F0F]" 
+                data-id="<%= player._id %>" data-name="<%= player.name %>" data-description="<%= player.description %>" 
+                data-image="<%= player.profilepic %>">
+                Send to User
+              </button>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="flex-1 max-w-xl p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-6">
+
+      <div class="text-2xl font-semibold text-red-600">
+        Time Remaining: <span id="timer">10</span> seconds
+      </div>
+
+      <div class="border-2 border-[#EB5E28] p-4 rounded-lg text-2xl font-semibold text-gray-800">
+        Current Bid: ₹<span id="current-bid">0</span>
+      </div>
+
+      <div class="bg-white shadow-lg rounded-lg p-4 max-h-40 overflow-y-auto space-y-2">
+        <p class="font-semibold text-lg text-gray-800">Bid History</p>
+        <div id="bid-history" class="space-y-2 text-gray-600">
+        </div>
+      </div>
+
+      <div id="winner-message-section" class="text-lg font-semibold text-green-600 hidden">
+      </div>
+
+      <div class="flex justify-center">
+        <button
+          id="end-auction-button"
+          class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-300"
+        >
+          End Auction
+        </button>
+      </div>
+      
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('/host/nukl');
+
+    document.querySelectorAll('.sendPlayerBtn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const playerData = {
+          id: btn.dataset.id,
+          name: btn.dataset.name,
+          description: btn.dataset.description,
+          image: btn.dataset.image
+        };
+
+        socket.emit('shareSelectedPlayer', playerData); 
+
+        const playerDiv = btn.closest('div[data-name]');
+        playerDiv.remove();
+      });
+    });
+
+    document.getElementById('end-auction-button').addEventListener('click', () => {
+      socket.emit('endAuction'); 
+    });
+
+    socket.on('timerUpdate', (timer) => {
+      document.getElementById('timer').innerText = timer;
+    });
+
+    socket.on('currentBidUpdate', (bid) => {
+      document.getElementById('current-bid').innerText = `${bid}`;
+    });
+
+    socket.on('bidHistoryUpdate', (history) => {
+      const historyContainer = document.getElementById('bid-history');
+      historyContainer.innerHTML = ''; 
+      
+      history.forEach(({ username, amount }) => {
+        const entry = document.createElement('p');
+        entry.classList.add('text-gray-600');
+        entry.innerText = `${username} ${amount === "Passed" ? "has passed" : `placed a bid of ₹${amount}`}`;
+        historyContainer.appendChild(entry);
+      });
+    });
+
+    socket.on('announceWinner', ({ username, player }) => {
+      const winnerMessageSection = document.getElementById('winner-message-section');
+      winnerMessageSection.innerText = `${username} bought ${player}`;
+      winnerMessageSection.classList.remove('hidden'); 
+    });
+
+    socket.on('unsoldPlayer', ({ player }) => {
+      const winnerMessageSection = document.getElementById('winner-message-section');
+      winnerMessageSection.innerText = `Player ${player} is unsold`;
+      winnerMessageSection.classList.remove('hidden');
+    });
+
+    socket.on('resetWinner', () => {
+      const winnerMessageSection = document.getElementById('winner-message-section');
+      winnerMessageSection.classList.add('hidden'); 
+      winnerMessageSection.innerText = ''; 
+    });
+  </script>
+
+</body>
+</html>
