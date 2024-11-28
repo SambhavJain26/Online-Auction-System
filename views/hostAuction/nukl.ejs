@@ -19,7 +19,7 @@
       <div class="text-center text-2xl font-semibold mb-4">Auction Players</div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="hostPlayerList">
         <% nukl.forEach((player) => { %>
-          <div class="w-full p-4 bg-slate-400 rounded-lg flex flex-col justify-between h-full">
+          <div class="w-full p-4 bg-slate-400 rounded-lg flex flex-col justify-between h-full" data-name="<%= player.name %>">
             <div class="w-full h-40 overflow-hidden rounded-lg mb-4">
               <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
             </div>
