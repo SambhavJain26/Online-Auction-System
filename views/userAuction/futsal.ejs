@@ -3,130 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User - FUTSAL Auction</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Futsal Live Arena - Franchise Terminal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-[#FFFCF2] relative">
+<body class="bg-[#F8FAFC] min-h-screen flex flex-col justify-between relative">
 
-  <div class="text-4xl font-bold text-center text-[#252422] mt-8">FUTSAL Auction</div>
-
-  <div class="flex justify-between items-center mt-6 px-6">
-    <div class="text-3xl font-semibold text-red-600">
-      Time Remaining: <span id="timer">10</span> seconds
-    </div>
-
-    <div class="text-2xl text-gray-800 text-center border-2 border-black p-3 rounded-lg items-center justify-center" id="current-bid">
-      Current Bid: ₹0
-    </div>
-
-    <div class="flex border-4 border-[#EB5E28] rounded-lg px-4 py-2 text-2xl font-semibold text-gray-800">
-      <p class="mr-4">Your Budget:</p>
-      ₹<span id="user-budget"><%= userBalance %></span>
+  <!-- Winner Modal Overlay -->
+  <div id="winner-overlay" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm text-white flex items-center justify-center text-center z-[9999]">
+    <div class="bg-slate-800 border-2 border-emerald-400 p-8 rounded-2xl max-w-md shadow-2xl transform scale-105 transition">
+      <div class="text-5xl mb-3">🔨 SOLD!</div>
+      <h2 class="text-2xl font-black text-emerald-400" id="winner-message"></h2>
+      <p class="mt-2 text-xs text-slate-300">Contract finalized and logged into the franchise ledger.</p>
+      <button onclick="document.getElementById('winner-overlay').classList.add('hidden')" class="mt-6 px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-900 rounded-xl font-bold text-xs uppercase tracking-wider transition">
+        Continue
+      </button>
     </div>
   </div>
 
-  <div class="flex justify-center gap-8 mt-10 mx-4">
-
-    <div id="player-container" class="bg-gray-300 shadow-lg rounded-lg flex flex-col items-center w-full max-w-sm p-6">
+  <!-- Header -->
+  <header class="flex justify-between items-center px-8 py-4 bg-[#1E293B] text-white shadow-md">
+    <div class="flex items-center gap-4">
+      <a href="/users" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg text-xs transition">
+        &larr; Exit to Hub
+      </a>
+      <span class="text-slate-400">|</span>
+      <h1 class="text-lg font-extrabold tracking-tight">Futsal Live Arena</h1>
     </div>
 
-    <div class="bg-white shadow-lg rounded-lg w-1/3 p-6 space-y-4">
-      <p class="text-lg font-bold text-gray-800">Bid History</p>
-      <div id="bid-history" class="max-h-40 overflow-y-auto space-y-2 text-gray-600">
+    <!-- Franchise Info -->
+    <div class="flex items-center gap-6">
+      <div class="text-right">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Franchise Purse</span>
+        <span class="text-lg font-black text-emerald-400">₹<span id="user-budget"><%= userBalance %></span></span>
       </div>
+      <span class="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs font-bold uppercase">
+        Live
+      </span>
     </div>
-    
-  </div>
+  </header>
 
-  <div class="flex justify-center space-x-4 mt-8">
-    <button id="bid-button" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
-      Place Bid
-    </button>
-    <button id="pass-button" class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-300">
-      Pass
-    </button>
-  </div>
+  <!-- Live Arena Main -->
+  <main class="max-w-5xl mx-auto px-6 py-8 flex-1 w-full">
 
-  <div id="winner-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 text-white items-center justify-center text-center z-[9999]">
-    <div>
-      <h1 class="text-4xl font-bold" id="winner-message"></h1>
+    <!-- Top Telemetry Bar -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      
+      <!-- Timer -->
+      <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-rose-700 block">Hammer Countdown</span>
+          <span class="text-xs text-rose-500">Resets on every valid bid</span>
+        </div>
+        <div class="text-3xl font-black text-rose-600 tracking-tight">
+          <span id="timer">10</span>s
+        </div>
+      </div>
+
+      <!-- Current Valuation -->
+      <div class="bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Current High Bid</span>
+          <span class="text-xs text-slate-400">Leading offer</span>
+        </div>
+        <div class="text-3xl font-extrabold text-amber-400" id="current-bid">
+          ₹0
+        </div>
+      </div>
+
+      <!-- Franchise Budget Indicator -->
+      <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">Available Balance</span>
+          <span class="text-xs text-emerald-600">Remaining cap space</span>
+        </div>
+        <div class="text-2xl font-black text-emerald-700">
+          ₹<%= userBalance %>
+        </div>
+      </div>
+
     </div>
-  </div>
+
+    <!-- Arena Stage Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Center: Athlete in Spotlight -->
+      <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col items-center min-h-[380px] justify-center text-center" id="player-container">
+        <div class="text-slate-300 text-5xl mb-3">⚽</div>
+        <h3 class="text-lg font-bold text-slate-700">Waiting for Next Candidate</h3>
+        <p class="text-slate-400 text-xs mt-1 max-w-sm">The auctioneer will bring the next futsal athlete to the bidding block shortly.</p>
+      </div>
+
+      <!-- Right: Action Controls & Bid Log -->
+      <div class="lg:col-span-5 flex flex-col gap-6">
+
+        <!-- Bid Action Panel -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Franchise Action</h4>
+
+          <button id="bid-button" class="w-full py-4 bg-[#EB5E28] hover:bg-[#d44f1c] text-white font-extrabold text-base tracking-wide rounded-xl shadow-md transition transform active:scale-95 opacity-50 cursor-not-allowed">
+            Submit Next Bid
+          </button>
+          
+          <button id="pass-button" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl transition">
+            Pass on Athlete
+          </button>
+        </div>
+
+        <!-- Bid History Card -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 mb-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Live Bidding Log</h4>
+            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Real-Time</span>
+          </div>
+          <div id="bid-history" class="max-h-48 overflow-y-auto space-y-2 text-xs">
+            <p class="text-slate-400 text-center py-4">Waiting for bids...</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="w-full py-3 text-center text-[11px] text-slate-400 border-t border-slate-200 bg-white">
+    Online Auction System &bull; Franchise Live Bidding Session
+  </footer>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io('/users/futsal');
 
     let currentBid = 0;
-    let countdownTimer = 10; 
-    let timerInterval;
     let biddingEnabled = false;
-    let userBudget = parseInt(document.getElementById('user-budget').innerText);
+    let userBudget = parseInt(document.getElementById('user-budget').innerText, 10) || 1500000;
 
     document.getElementById('pass-button').addEventListener('click', () => {
       socket.emit("pass", "<%= userId %>");
     });
 
-    const storedBudget = localStorage.getItem("userBudget");
-    if (storedBudget) {
-      userBudget = parseInt(storedBudget, 10); 
-    }
-    document.getElementById("user-budget").innerText = `${userBudget}`;
+    document.getElementById('bid-button').addEventListener('click', () => {
+      placeBid("<%= userId %>");
+    });
 
     function calculateNextBid() {
       if (currentBid === 0) {
-        return 3000; 
-      } else if (currentBid < 10000) {
-        return currentBid + 500; 
+        return 20000;
+      } else if (currentBid < 100000) {
+        return currentBid + 10000;
+      } else if (currentBid < 200000) {
+        return currentBid + 20000;
       } else {
-        return currentBid + 1000; 
+        return currentBid + 25000;
       }
-    }
-
-    function updateCurrentBid(bid) {
-      document.getElementById('current-bid').innerText = `Current Bid: ₹${bid}`;
-      currentBid = bid;
     }
 
     function placeBid(userId) {
-      if (!biddingEnabled) {
-        alert("Bidding is not allowed at this time.");
-        return;
-      }
-      const newBid = calculateNextBid();
-      if (userBudget < newBid) {
-        alert("You don't have enough budget to place this bid.");
+      if (!biddingEnabled) return;
+
+      const nextBid = calculateNextBid();
+      if (nextBid > userBudget) {
+        alert("Insufficient purse balance to place this bid!");
         return;
       }
 
-      socket.emit('placeBid', { userId, newBid });
+      socket.emit('bid', { userId, amount: nextBid });
     }
 
-    function updateTimerDisplay(timer) {
-      document.getElementById('timer').innerText = timer;
+    function updateCurrentBid(bid) {
+      currentBid = bid;
+      document.getElementById('current-bid').innerText = `₹${currentBid}`;
+      const nextBid = calculateNextBid();
+      const bidBtn = document.getElementById('bid-button');
+      bidBtn.innerText = `Bid ₹${nextBid}`;
     }
 
     function renderBidHistory(history) {
       const historyContainer = document.getElementById('bid-history');
       historyContainer.innerHTML = '';
 
+      if (history.length === 0) {
+        historyContainer.innerHTML = '<p class="text-slate-400 text-center py-2">No bids recorded yet.</p>';
+        return;
+      }
+
       history.forEach(({ username, amount }) => {
-        const entry = document.createElement('p');
-        entry.classList.add('text-gray-600');
-        entry.innerText = `${username} ${amount === "Passed" ? "has passed" : `placed a bid of ₹${amount}`}`;
+        const entry = document.createElement('div');
+        entry.className = 'py-1 px-2 rounded bg-slate-50 border border-slate-100 flex justify-between items-center';
+        if (amount === "Passed") {
+          entry.innerHTML = `<span class="font-medium text-slate-600">${username}</span> <span class="text-rose-500 font-bold">Passed</span>`;
+        } else {
+          entry.innerHTML = `<span class="font-medium text-slate-800">${username}</span> <span class="text-emerald-600 font-bold">₹${amount}</span>`;
+        }
         historyContainer.appendChild(entry);
       });
+      historyContainer.scrollTop = historyContainer.scrollHeight;
     }
 
     function renderPlayer(playerData) {
       const playerContainer = document.getElementById('player-container');
-      playerContainer.innerHTML = '';
-
       const playerCard = `
-        <img src="../imgs/uploads/${playerData.image}" alt="${playerData.name}" class="w-48 h-60 rounded-md object-cover mb-4">
-        <div class="flex flex-col space-y-2">
-          <p class="text-2xl font-bold text-gray-800">${playerData.name}</p>
-          <p class="text-gray-600">${playerData.description}</p>
+        <div class="w-full flex flex-col items-center">
+          <div class="w-56 h-60 rounded-xl overflow-hidden bg-slate-900 border-2 border-slate-200 mb-4 shadow-sm">
+            <img src="/imgs/uploads/${playerData.image || 'futsal_01.png'}" onerror="this.src='/imgs/uploads/sample_athlete.png'" alt="${playerData.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="text-center">
+            <span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-full mb-2 uppercase tracking-wider">Candidate on the Block</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">${playerData.name}</h3>
+            <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto leading-relaxed">${playerData.description}</p>
+          </div>
         </div>
       `;
 
@@ -139,68 +230,68 @@
         if (playerData.name) {
           renderPlayer(playerData); 
         }
-    });
-
-    socket.on('auctionEnded', ({ message, redirectRoute }) => {
-      window.location.href = `${redirectRoute}?auctionEnded=true`;
-    });
+      })
+      .catch(err => console.log(err));
 
     socket.on('receiveSelectedPlayer', (playerData) => {
-      updateCurrentBid(0); 
-      renderBidHistory([]);
-      renderPlayer(playerData);
+      renderPlayer(playerData); 
+    });
+
+    socket.on('currentBidUpdate', (bid) => {
+      updateCurrentBid(bid);
     });
 
     socket.on('bidHistoryUpdate', (history) => {
       renderBidHistory(history);
     });
 
-    socket.on('currentBidUpdate', (bid) => {
-      updateCurrentBid(bid); 
-    });
-
     socket.on('timerUpdate', (timer) => {
-      updateTimerDisplay(timer);
+      document.getElementById('timer').innerText = timer;
     });
 
     socket.on('biddingStatusUpdate', (status) => {
       biddingEnabled = status;
-      document.getElementById('bid-button').disabled = !biddingEnabled;
+      const bidBtn = document.getElementById('bid-button');
+      if (biddingEnabled) {
+        bidBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        bidBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
     });
 
     socket.on('passButtonStatus', (status) => {
-      const passButton = document.getElementById('pass-button');
-      passButton.disabled = !status; 
+      const passBtn = document.getElementById('pass-button');
+      if (status) {
+        passBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        passBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
     });
 
     socket.on('announceWinner', ({ username, player }) => {
-      const overlay = document.getElementById('winner-overlay');
-      const message = document.getElementById('winner-message');
-      message.innerText = `${username} bought ${player}`;
-      overlay.classList.remove('hidden');
-      overlay.classList.add('flex');
+      const winnerOverlay = document.getElementById('winner-overlay');
+      const winnerMessage = document.getElementById('winner-message');
+      winnerMessage.innerText = `${username} won ${player} for ₹${currentBid}!`;
+      winnerOverlay.classList.remove('hidden');
 
-      userBudget -= currentBid;
-      document.getElementById("user-budget").innerText = `${userBudget}`;
-      localStorage.setItem("userBudget", userBudget);
+      if (username === "<%= username %>") {
+        userBudget -= currentBid;
+        document.getElementById('user-budget').innerText = userBudget;
+      }
     });
 
     socket.on('unsoldPlayer', ({ player }) => {
-      const overlay = document.getElementById('winner-overlay');
-      const message = document.getElementById('winner-message');
-      message.innerText = `Player ${player} is unsold`;
-      overlay.classList.remove('hidden');
-      overlay.classList.add('flex');
+      const winnerOverlay = document.getElementById('winner-overlay');
+      const winnerMessage = document.getElementById('winner-message');
+      winnerMessage.innerText = `${player} went unsold.`;
+      winnerOverlay.classList.remove('hidden');
     });
 
     socket.on('resetWinner', () => {
-      const overlay = document.getElementById('winner-overlay');
-      overlay.classList.add('hidden');
-      overlay.classList.remove('flex');
-    });
-
-    document.getElementById('bid-button').addEventListener('click', () => {
-      placeBid("<%= userId %>");
+      const winnerOverlay = document.getElementById('winner-overlay');
+      winnerOverlay.classList.add('hidden');
+      updateCurrentBid(0);
+      document.getElementById('bid-button').innerText = "Submit Next Bid";
     });
   </script>
 

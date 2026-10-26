@@ -3,40 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Management</title>
+  <title>Manage Franchises - Online Auction System</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-[#f9fafb]">
+<body class="bg-[#F8FAFC] min-h-screen">
 
-  <!-- Go Back Button -->
-  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-white">
-    <a href="/host/dashboard">
-      <button class="px-4 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
+  <!-- Header -->
+  <header class="flex justify-between items-center px-8 py-4 bg-[#1E293B] text-white shadow-md">
+    <div class="flex items-center gap-4">
+      <a href="/host/dashboard" class="px-4 py-2 bg-[#EB5E28] hover:bg-[#d44f1c] text-white font-semibold rounded-lg text-xs transition shadow-sm">
+        &larr; Back to Dashboard
+      </a>
+      <span class="text-slate-400">|</span>
+      <h1 class="text-xl font-bold tracking-tight text-white">Registered Team Franchises</h1>
+    </div>
+    <a href="/host/adduser" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold text-xs transition shadow-sm">
+      + Register Franchise
     </a>
-  </div>
+  </header>
 
-  <!-- User List Section -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-6 py-8">
-    <% users.forEach((user) => { %>
-      <div class="w-full p-6 bg-slate-400 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
-        <!-- Profile Picture -->
-        <div class="w-36 h-36 rounded-full overflow-hidden mb-6 mx-auto border-4 border-orange-500">
-          <img class="w-full h-full object-cover" src="../imgs/uploads/<%= user.profilepic %>" alt="<%= user.username %>">
+  <!-- Main Grid -->
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="mb-6">
+      <h2 class="text-2xl font-extrabold text-slate-900">Franchise Directory</h2>
+      <p class="text-slate-500 text-sm mt-1">Review authenticated team accounts, assigned purse budgets, and league participation.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <% if (users.length === 0) { %>
+        <div class="col-span-full py-16 text-center text-slate-400 text-sm">No franchise accounts registered yet.</div>
+      <% } %>
+      <% users.forEach((user) => { %>
+        <div class="bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between text-center">
+          <div>
+            <!-- Profile Avatar -->
+            <div class="w-28 h-28 rounded-2xl overflow-hidden mx-auto mb-4 border-2 border-slate-200 bg-slate-900 shadow-sm">
+              <img class="w-full h-full object-cover" src="/imgs/uploads/<%= user.profilepic %>" onerror="this.src='/imgs/uploads/sample_franchise_apex.png'" alt="<%= user.username %>">
+            </div>
+            
+            <!-- Username & Email -->
+            <span class="inline-block px-2.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold rounded-full mb-1">
+              Active Franchise
+            </span>
+            <h3 class="text-lg font-extrabold text-slate-900"><%= user.username %></h3>
+            <p class="text-xs text-slate-500 mt-0.5"><%= user.email %></p>
+
+            <!-- Assigned Leagues -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap justify-center gap-1.5">
+              <% (user.auctions || []).forEach(a => { %>
+                <span class="text-[10px] font-semibold px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
+                  <%= a.auction %> (₹<%= (a.budget / 100000).toFixed(1) %>L)
+                </span>
+              <% }) %>
+            </div>
+          </div>
+          
+          <!-- Delete User Link -->
+          <div class="mt-5 pt-3 border-t border-slate-100">
+            <a class="inline-flex items-center text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200 transition" href="/host/deleteuser/<%= user._id %>" onclick="return confirm('Remove <%= user.username %>?')">
+              Delete Franchise
+            </a>
+          </div>
         </div>
-        
-        <!-- Username -->
-        <p class="text-2xl font-semibold text-center text-[#2D3748] mb-2"><%= user.username %></p>
-        
-        <!-- Email -->
-        <p class="text-lg text-center text-gray-700 mb-4"><%= user.email %></p>
-        
-        <!-- Delete User Link -->
-        <div class="flex justify-center">
-          <a class="text-red-500 hover:underline font-semibold text-lg" href="/host/deleteuser/<%= user._id %>">Delete User</a>
-        </div>
-      </div>
-    <% }) %>
-  </div>
+      <% }) %>
+    </div>
+  </main>
 
 </body>
 </html>

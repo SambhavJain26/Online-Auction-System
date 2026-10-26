@@ -3,51 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add New Player</title>
+  <title>Add Athlete - Online Auction System</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-[#f9fafb]">
+<body class="bg-[#F8FAFC] min-h-screen flex flex-col justify-between">
 
-  <!-- Go Back Button -->
-  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-white">
-    <a href="/host/dashboard">
-      <button class="px-4 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
-    </a>
-  </div>
-
-  <!-- Form Container -->
-  <div class="flex justify-center items-center min-h-screen bg-[#f9fafb]">
-    <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
-      <h2 class="text-2xl font-bold text-center text-[#403D39] mb-6">Add New Player</h2>
-      <form action="/host/addnew" method="post" enctype="multipart/form-data" class="space-y-6">
-        
-        <!-- Player Name -->
-        <input type="text" name="name" placeholder="Name of the player" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-
-        <!-- Player Email -->
-        <input type="email" name="email" placeholder="Player email" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-
-        <!-- Player Description -->
-        <input type="text" name="description" placeholder="Player description" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-
-        <!-- Player Image -->
-        <input type="file" name="image" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-
-        <!-- Auction Selection -->
-        <label for="auction" class="block text-lg font-medium text-[#403D39]">Choose the auction:</label>
-        <select name="auction" id="auction" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
-          <option value="impetus">Impetus</option>
-          <option value="nupl cricket">NUPL Cricket</option>
-          <option value="futsal">Futsal</option>
-          <option value="nukl kabbadi">NUKL Kabbadi</option>
-        </select>
-
-        <!-- Submit Button -->
-        <input type="submit" value="Add Player" class="w-full py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300">
-
-      </form>
+  <!-- Header -->
+  <header class="flex justify-between items-center px-8 py-4 bg-[#1E293B] text-white shadow-md">
+    <div class="flex items-center gap-4">
+      <a href="/host/dashboard" class="px-4 py-2 bg-[#EB5E28] hover:bg-[#d44f1c] text-white font-semibold rounded-lg text-xs transition shadow-sm">
+        &larr; Back to Dashboard
+      </a>
+      <span class="text-slate-400">|</span>
+      <h1 class="text-xl font-bold tracking-tight text-white">Register Athlete</h1>
     </div>
-  </div>
+  </header>
+
+  <!-- Form Section -->
+  <main class="max-w-xl mx-auto my-8 p-8 bg-white border border-slate-200 rounded-2xl shadow-sm flex-1 w-full">
+    <div class="text-center mb-6">
+      <span class="inline-block px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold rounded-full mb-2 uppercase tracking-wider">
+        Roster Management
+      </span>
+      <h2 class="text-2xl font-extrabold text-slate-900">Add New Player</h2>
+      <p class="text-slate-500 text-xs mt-1">Register an athlete into the upcoming auction pool.</p>
+    </div>
+
+    <form action="/host/addnew" method="post" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Athlete Full Name</label>
+        <input type="text" name="name" placeholder="e.g. Alex Sterling" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#EB5E28] focus:bg-white transition" required>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Contact Email</label>
+        <input type="email" name="email" placeholder="athlete@league.com" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#EB5E28] focus:bg-white transition" required>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Role & Profile Summary</label>
+        <input type="text" name="description" placeholder="e.g. Top-Order Batter / Strike Bowler" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#EB5E28] focus:bg-white transition" required>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">League Category</label>
+        <select name="auction" id="auction" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#EB5E28] focus:bg-white transition" required>
+          <option value="nupl cricket">NUPL Cricket</option>
+          <option value="impetus">Impetus (Esports)</option>
+          <option value="futsal">Futsal League</option>
+          <option value="nukl kabbadi">NUKL Kabaddi</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Profile Photo (Optional)</label>
+        <input type="file" name="image" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300">
+      </div>
+
+      <button type="submit" class="w-full mt-4 py-3 bg-[#EB5E28] hover:bg-[#d44f1c] text-white font-bold rounded-xl text-sm transition shadow-sm">
+        Register Athlete
+      </button>
+    </form>
+  </main>
+
+  <footer class="py-4 text-center text-xs text-slate-400 border-t border-slate-200 bg-white">
+    Sports Auction Arena: Automated Rostering System
+  </footer>
 
 </body>
 </html>

@@ -5,38 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/login.css">
-    <title>Document</title>
+    <title>Sports Auction Arena - Authentication Portal</title>
 </head>
 
 <body>
     <div class="container" id="container">
         <div class="form-container sign-up">
             <form action="/loginHost" method="post">
-                <h1>Login as Host</h1>
-                <input type="email" name="email" placeholder="Email">
-                <input type="password" name="password" placeholder="Password">
-                <button>Sign In</button>
+                <h1>Host Portal</h1>
+                <p style="margin: 4px 0 16px 0; color: #64748b; font-size: 13px;">Sign in with your auctioneer credentials</p>
+                <input type="email" name="email" placeholder="Email (e.g. host@nupl.com)" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Sign In as Host</button>
             </form>
         </div>
         <div class="form-container sign-in">
             <form action="/loginUser" method="post">
-                <h1>Login as User</h1>
-                <input type="email" name="email" placeholder="Email">
-                <input type="password" name="password" placeholder="Password">
-                <button>Sign In</button>
+                <h1>Franchise Portal</h1>
+                <p style="margin: 4px 0 16px 0; color: #64748b; font-size: 13px;">Sign in with your team franchise credentials</p>
+                <input type="email" name="email" placeholder="Email (e.g. user@nupl.com)" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Sign In as Franchise</button>
             </form>
         </div>
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
-                  <h1>Hello, Franchise??</h1>
-                  <p>If you are the franchise of this auction then please click below</p>
-                  <button class="hidden" id="login">I am User</button>
+                  <h1>Team Franchise</h1>
+                  <p>Bidding for athletes in the live auction? Switch to the franchise portal.</p>
+                  <button class="hidden" id="login">Franchise Login</button>
                 </div>
                 <div class="toggle-panel toggle-right">
-                    <h1>Hello, Host??</h1>
-                    <p>If you are the host of this auction then please click below</p>
-                    <button class="hidden" id="register">I am Host</button>
+                    <h1>Auction Host</h1>
+                    <p>Managing athletes, conducting rounds, and controlling the hammer? Switch to the host portal.</p>
+                    <button class="hidden" id="register">Host Login</button>
                 </div>
             </div>
         </div>

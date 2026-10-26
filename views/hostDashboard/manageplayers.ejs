@@ -3,82 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Manage Players - Online Auction System</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-[#f9fafb]">
+<body class="bg-[#F8FAFC] min-h-screen">
 
-  <!-- Go Back Button -->
-  <div class="flex justify-between items-center px-6 py-4 bg-[#403D39] text-white">
-    <a href="/host/dashboard">
-      <button class="px-4 py-2 bg-orange-500 rounded-lg font-bold hover:bg-orange-600 transition duration-300">Go Back</button>
-    </a>
-  </div>
+  <!-- Navigation Bar -->
+  <header class="w-full bg-[#1E293B] text-white px-8 py-4 flex justify-between items-center shadow-md">
+    <div class="flex items-center gap-4">
+      <a href="/host/dashboard" class="flex items-center gap-2 px-4 py-2 bg-[#EB5E28] hover:bg-[#d44f1c] text-white rounded-lg font-semibold text-sm transition shadow-sm">
+        <span>&larr;</span> Back to Dashboard
+      </a>
+      <span class="text-slate-400">|</span>
+      <h1 class="text-xl font-bold tracking-tight text-white">Player Roster Management</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/host/newplayer" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold text-sm transition shadow-sm">
+        + Add New Player
+      </a>
+      <a href="/host" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium text-sm transition">
+        Auction Hub
+      </a>
+    </div>
+  </header>
 
-  <!-- Main Content with Auction Sections -->
-  <div class="flex flex-wrap justify-evenly gap-8 px-6 py-8">
-
-    <!-- IMPETUS Section -->
-    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
-      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">IMPETUS</h1>
-      <% impetus.forEach((player) => { %>
-        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
-          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
-            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
-          </div>
-          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
-          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
-          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
-        </div>
-      <% }) %>
+  <!-- Main Content Grid -->
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="mb-6">
+      <h2 class="text-2xl font-extrabold text-slate-900">Registered League Athletes</h2>
+      <p class="text-slate-500 text-sm mt-1">Review, monitor, and manage participating prospective players across all 4 sports divisions.</p>
     </div>
 
-    <!-- NUPL Section -->
-    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
-      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">NUPL</h1>
-      <% nupl.forEach((player) => { %>
-        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
-          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
-            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
-          </div>
-          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
-          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
-          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
-        </div>
-      <% }) %>
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-    <!-- FUTSAL Section -->
-    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
-      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">FUTSAL</h1>
-      <% futsal.forEach((player) => { %>
-        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
-          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
-            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+      <!-- NUPL Section -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+            <h3 class="text-lg font-bold text-slate-800">NUPL</h3>
           </div>
-          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
-          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
-          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
+            Cricket (<%= nupl.length %>)
+          </span>
         </div>
-      <% }) %>
-    </div>
 
-    <!-- NUKL Section -->
-    <div class="flex-1 max-w-xs p-6 border-2 border-[#EB5E28] rounded-lg shadow-lg space-y-4">
-      <h1 class="text-3xl font-bold text-center text-[#403D39] mb-4">NUKL</h1>
-      <% nukl.forEach((player) => { %>
-        <div class="w-full p-4 bg-orange-100 border-2 border-black rounded-lg transition-all duration-300 hover:shadow-xl">
-          <div class="w-full h-40 rounded-lg overflow-hidden mb-4">
-            <img class="w-full h-full object-cover" src="../imgs/uploads/<%= player.profilepic %>" alt="<%= player.name %>">
+        <div class="space-y-4 flex-1">
+          <% if (nupl.length === 0) { %>
+            <div class="text-center py-8 text-slate-400 text-sm">No players added yet.</div>
+          <% } %>
+          <% nupl.forEach((player) => { %>
+            <div class="bg-slate-50 border border-slate-200 hover:border-amber-400 rounded-xl p-3.5 transition duration-200 hover:shadow-md flex flex-col justify-between">
+              <div>
+                <div class="w-full h-44 rounded-lg overflow-hidden bg-slate-900 mb-3 border border-slate-200">
+                  <img class="w-full h-full object-cover" src="/imgs/uploads/<%= player.profilepic %>" onerror="this.src='/imgs/uploads/cricket_01.png'" alt="<%= player.name %>">
+                </div>
+                <h4 class="font-bold text-base text-slate-900"><%= player.name %></h4>
+                <p class="text-slate-500 text-xs mt-1 leading-relaxed"><%= player.description %></p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-[11px] font-medium text-slate-400">ID: <%= String(player._id).slice(-6) %></span>
+                <a href="/host/deleteplayer/<%= player._id %>" onclick="return confirm('Delete <%= player.name %>?')" class="inline-flex items-center text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-md border border-rose-200 transition">
+                  Delete
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- IMPETUS Section -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+            <h3 class="text-lg font-bold text-slate-800">IMPETUS</h3>
           </div>
-          <p class="font-semibold text-lg text-gray-800 mb-2"><%= player.name %></p>
-          <p class="text-gray-600 text-sm mb-4"><%= player.description %></p>
-          <a href="/host/deleteplayer/<%= player._id %>" class="text-red-500 hover:underline">Delete player</a>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
+            Esports (<%= impetus.length %>)
+          </span>
         </div>
-      <% }) %>
-    </div>
 
-  </div>
+        <div class="space-y-4 flex-1">
+          <% if (impetus.length === 0) { %>
+            <div class="text-center py-8 text-slate-400 text-sm">No players added yet.</div>
+          <% } %>
+          <% impetus.forEach((player) => { %>
+            <div class="bg-slate-50 border border-slate-200 hover:border-indigo-400 rounded-xl p-3.5 transition duration-200 hover:shadow-md flex flex-col justify-between">
+              <div>
+                <div class="w-full h-44 rounded-lg overflow-hidden bg-slate-900 mb-3 border border-slate-200">
+                  <img class="w-full h-full object-cover" src="/imgs/uploads/<%= player.profilepic %>" onerror="this.src='/imgs/uploads/esports_01.png'" alt="<%= player.name %>">
+                </div>
+                <h4 class="font-bold text-base text-slate-900"><%= player.name %></h4>
+                <p class="text-slate-500 text-xs mt-1 leading-relaxed"><%= player.description %></p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-[11px] font-medium text-slate-400">ID: <%= String(player._id).slice(-6) %></span>
+                <a href="/host/deleteplayer/<%= player._id %>" onclick="return confirm('Delete <%= player.name %>?')" class="inline-flex items-center text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-md border border-rose-200 transition">
+                  Delete
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- FUTSAL Section -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+            <h3 class="text-lg font-bold text-slate-800">FUTSAL</h3>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-sky-50 text-sky-700 rounded-full border border-sky-200">
+            Indoor Soccer (<%= futsal.length %>)
+          </span>
+        </div>
+
+        <div class="space-y-4 flex-1">
+          <% if (futsal.length === 0) { %>
+            <div class="text-center py-8 text-slate-400 text-sm">No players added yet.</div>
+          <% } %>
+          <% futsal.forEach((player) => { %>
+            <div class="bg-slate-50 border border-slate-200 hover:border-sky-400 rounded-xl p-3.5 transition duration-200 hover:shadow-md flex flex-col justify-between">
+              <div>
+                <div class="w-full h-44 rounded-lg overflow-hidden bg-slate-900 mb-3 border border-slate-200">
+                  <img class="w-full h-full object-cover" src="/imgs/uploads/<%= player.profilepic %>" onerror="this.src='/imgs/uploads/futsal_01.png'" alt="<%= player.name %>">
+                </div>
+                <h4 class="font-bold text-base text-slate-900"><%= player.name %></h4>
+                <p class="text-slate-500 text-xs mt-1 leading-relaxed"><%= player.description %></p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-[11px] font-medium text-slate-400">ID: <%= String(player._id).slice(-6) %></span>
+                <a href="/host/deleteplayer/<%= player._id %>" onclick="return confirm('Delete <%= player.name %>?')" class="inline-flex items-center text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-md border border-rose-200 transition">
+                  Delete
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- NUKL Section -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-orange-600"></span>
+            <h3 class="text-lg font-bold text-slate-800">NUKL</h3>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-orange-50 text-orange-700 rounded-full border border-orange-200">
+            Kabaddi (<%= nukl.length %>)
+          </span>
+        </div>
+
+        <div class="space-y-4 flex-1">
+          <% if (nukl.length === 0) { %>
+            <div class="text-center py-8 text-slate-400 text-sm">No players added yet.</div>
+          <% } %>
+          <% nukl.forEach((player) => { %>
+            <div class="bg-slate-50 border border-slate-200 hover:border-orange-400 rounded-xl p-3.5 transition duration-200 hover:shadow-md flex flex-col justify-between">
+              <div>
+                <div class="w-full h-44 rounded-lg overflow-hidden bg-slate-900 mb-3 border border-slate-200">
+                  <img class="w-full h-full object-cover" src="/imgs/uploads/<%= player.profilepic %>" onerror="this.src='/imgs/uploads/kabaddi_01.png'" alt="<%= player.name %>">
+                </div>
+                <h4 class="font-bold text-base text-slate-900"><%= player.name %></h4>
+                <p class="text-slate-500 text-xs mt-1 leading-relaxed"><%= player.description %></p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-[11px] font-medium text-slate-400">ID: <%= String(player._id).slice(-6) %></span>
+                <a href="/host/deleteplayer/<%= player._id %>" onclick="return confirm('Delete <%= player.name %>?')" class="inline-flex items-center text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-md border border-rose-200 transition">
+                  Delete
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+    </div>
+  </main>
 
 </body>
 </html>
