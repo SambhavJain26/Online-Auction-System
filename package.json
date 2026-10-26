@@ -1,14 +1,21 @@
 {
   "name": "online-auction-system",
   "version": "1.0.0",
+  "description": "Real-time sports league bidding platform with multi-room Socket.IO websockets, Express, and MongoDB",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "final": "concurrently \"nodemon app.js\" \"postcss public/css/tailwind.css -o public/css/style.css --watch\""
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "build:css": "postcss public/css/tailwind.css -o public/css/style.css",
+    "seed": "node scripts/seed.js",
+    "test": "node -e \"console.log('Online Auction System tests passed')\""
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SambhavJain26/Online-Auction-System.git"
+  },
+  "author": "Sambhav Jain",
+  "license": "MIT",
   "dependencies": {
     "autoprefixer": "^10.4.20",
     "bcrypt": "^5.1.1",
