@@ -1,4 +1,4 @@
-# Online Auction System: Real-Time Sports League Bidding Platform
+# Real-Time Auction & Live Bidding Engine
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js: 18+](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)

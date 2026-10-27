@@ -1,7 +1,8 @@
-# Case Study: Real-Time Sports League Online Auction Platform
+# Case Study: Real-Time Auction & Live Bidding Engine
 
 ## Project Hero
 
+- **Project Title**: Real-Time Auction & Live Bidding Engine
 - **Role**: Lead Full-Stack & Distributed Systems Architect
 - **Project Type**: Real-Time Multiplayer Bidding Engine & League Management System
 - **Timeline**: 2024 - 2025
